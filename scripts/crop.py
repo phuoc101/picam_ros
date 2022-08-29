@@ -12,21 +12,20 @@ from cv_bridge import CvBridge
 class ImageCropper(object):
     def __init__(self):
         self.has_radius_and_center = False
-        self.lower_thresh = rospy.get_param("~lower_thresh", default=150)
-        self.higher_thresh = rospy.get_param("~higher_thresh", default=255)
+        self.lower_thresh = rospy.get_param("~lower_thresh")
+        self.higher_thresh = rospy.get_param("~higher_thresh")
         self.image_topic = rospy.get_param("~image_topic")
         rospack = rospkg.RosPack()
         self.output_path = os.path.join(
             rospack.get_path("picam_ros"),
             "data",
-            rospy.get_param("~output_path", default="input_raw_picam360"))
-        print(rospy.get_param("~bagfile"))
+            rospy.get_param("~output_path"))
         self.bagfile = os.path.join(
             rospack.get_path("picam_ros"),
             "bags",
             rospy.get_param("~bagfile"))
         self.bag = Bag(self.bagfile, 'r')
-        self.img_count = self.bag.get_message_count("/picam360/image_raw")
+        self.img_count = self.bag.get_message_count(self.image_topic)
         os.makedirs(self.output_path, exist_ok=True)
 
         self.radius, self.center = None, None

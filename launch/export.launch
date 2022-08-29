@@ -3,8 +3,10 @@
   <!-- <node pkg="rosbag" type="play" name="rosbag" required="false" args="$(find picam_ros)/bags/$(arg bagfile)" output="screen"/> -->
 
   <arg name="image_topic" default="/picam360/image_raw" />
-  <arg name="output_path" />
+  <arg name="output_path" default="picam2"/>
   <arg name="bagfile" default="picam2.bag" />
+  <arg name="lower_thresh" default="150" />
+  <arg name="higher_thresh" default="255" />
   <!-- <arg name="filename_format" default="frame_%05d.png" /> -->
 
   <!-- <node name="video_extractor" pkg="image_view" type="video_recorder" espawn="false" required="true" output="screen" cwd="ROS_HOME"> -->
@@ -12,6 +14,8 @@
     <param name="image_topic" value="$(arg image_topic)" />
     <param name="output_path" value="$(arg output_path)" />
     <param name="bagfile" value="$(arg bagfile)" />
+    <param name="lower_thresh" value="$(arg lower_thresh)" />
+    <param name="higher_thresh" value="$(arg higher_thresh)" />
   </node>
 
   <!-- <node name="image_extractor" pkg="image_view" type="extract_images" output="screen" > -->
