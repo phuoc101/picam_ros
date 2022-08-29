@@ -211,4 +211,5 @@ CATKIN_IGNORE
 # Data
 input*/
 output/
+data/
 bags/
