@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
 <launch>
   <!-- camera read node -->
   <arg name="video_device" default="/dev/video2"/>

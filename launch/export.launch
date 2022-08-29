@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="bagfile" default="picam_2022-05-30-22-03-07.bag" />
+  <node pkg="rosbag" type="play" name="rosbag" required="true" args="$(find picam_ros)/bags/$(arg bagfile)"/>
+
+  <arg name="image_topic" default="/picam360/image_raw" />
+  <arg name="crop_topic" default="/picam360/crop" />
+  <arg name="output_path" default="input_raw_picam360" />
+  <!-- <arg name="filename_format" default="frame_%05d.png" /> -->
+
+  <node name="image_cropper" pkg="picam_ros" type="crop.py" output="screen" >
+    <param name="image_topic" value="$(arg image_topic)" />
+    <param name="crop_topic" value="$(arg crop_topic)" />
+    <param name="output_path" value="$(arg output_path)" />
+  </node>
+
+  <!-- <node name="image_extractor" pkg="image_view" type="extract_images" output="screen" > -->
+  <!--   <remap from="image" to="$(arg crop_topic)"/> -->
+  <!--   <param name="filename_format" value="$(find picam_ros)/input_raw_picam360/$(arg filename_format)" /> -->
+  <!-- </node> -->
+</launch>
