@@ -2,11 +2,13 @@
 DEFAULT_BAGFILE_NAME="picam_raw"
 TOPICS_TO_COLLECT="/picam360/image_raw /picam360/camera_info"
 BAGFILE_NAME=$DEFAULT_BAGFILE_NAME
-while getopts n:t: flag
+while getopts ":n:t:" flag
 do
   case "${flag}" in
     n) BAGFILE_NAME=${OPTARG};;
-    t) TOPICS_TO_COLLECT=${OPTARG}
+    t) TOPICS_TO_COLLECT=${OPTARG};;
+    \?) echo "Invalid option -$OPTARG" >&2
+    exit 1;;
   esac
 done
 echo "BAG NAME: $BAGFILE_NAME";
