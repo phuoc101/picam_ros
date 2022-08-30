@@ -29,7 +29,7 @@
 
   <!-- rosbag record nodes -->
   <arg name="bagfile_name" default="picam_raw" />
-  <arg name="topics_to_collect" default="/$(arg camera_name)/image_raw /$(arg camera_name)/camera_info" />
+  <arg name="topics_to_collect" default="/$(arg camera_name)/image_raw" />
   <node name="$(anon record_cam)" pkg="rosbag" type="record" output="screen"
     args="record -o $(find picam_ros)/bags/$(arg bagfile_name) $(arg topics_to_collect) -b 0"
     if="$(eval arg('record_cam'))" />
