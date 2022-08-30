@@ -40,7 +40,7 @@ class ImageCropper(object):
 
         # YAML config setup
         self.config_path = os.path.join(
-            rospack.get_path("picam_ros"), 
+            rospack.get_path("picam_ros"),
             "config")
         self.yaml_file = os.path.join(
             self.config_path,
@@ -59,7 +59,7 @@ class ImageCropper(object):
         scale = 1 if width <= 1000 else 2
         cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
         cv2.resizeWindow(WINDOW_NAME, width//scale + 100, height//scale + 100)
-        N = max(img_sample.shape)
+        N = 2 * max(img_sample.shape)
         cv2.createTrackbar("radius", WINDOW_NAME, 0, N, self.on_trackbar)
         cv2.createTrackbar("Cx", WINDOW_NAME, N // 2, N, self.on_trackbar)
         cv2.createTrackbar("Cy", WINDOW_NAME, N // 2, N, self.on_trackbar)
@@ -115,8 +115,8 @@ class ImageCropper(object):
                     img_sample=img)
             else:
                 self.center, self.radius = self.get_fisheye_circle_info()
-        img_cropped = img[self.center[1]-self.radius:self.center[1] +
-                          self.radius, self.center[0]-self.radius:self.center[0]+self.radius]
+        img_cropped = img[max(0, self.center[1]-self.radius):self.center[1]+self.radius,
+                          max(0, self.center[0]-self.radius):self.center[0]+self.radius]
         filename = f"frame_{self.img_n:05d}.png"
         filepath = os.path.join(self.img_path, filename)
         cv2.imwrite(filepath, img_cropped)
