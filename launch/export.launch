@@ -3,13 +3,11 @@
   <arg name="image_topic" default="/picam360/image_raw" />
   <arg name="output_path" default="picam2"/>
   <arg name="bagfile" default="Hevolinna/picam2.bag" />
-  <arg name="lower_thresh" default="150" />
-  <arg name="higher_thresh" default="255" />
+  <arg name="yaml" default="" />
   <node name="$(anon image_cropper)" pkg="picam_ros" type="crop.py" output="screen" required="true" >
     <param name="image_topic" value="$(arg image_topic)" />
     <param name="output_path" value="$(arg output_path)" />
     <param name="bagfile" value="$(arg bagfile)" />
-    <param name="lower_thresh" value="$(arg lower_thresh)" />
-    <param name="higher_thresh" value="$(arg higher_thresh)" />
+    <param name="yaml" value="$(arg yaml)" />
   </node>
 </launch>

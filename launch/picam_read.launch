@@ -24,13 +24,14 @@
 
   <!-- show image node -->
   <node name="$(anon image_view)" pkg="image_view" type="image_view" respawn="false" output="screen" if="$(eval arg('show_img'))">
-    <remap from="image" to="$(arg camera_name)/image_raw"/>
+    <remap from="image" to="/$(arg camera_name)/image_raw"/>
   </node>
 
   <!-- rosbag record nodes -->
   <arg name="bagfile_name" default="picam_raw" />
+  <arg name="topics_to_collect" default="/$(arg camera_name)/image_raw /$(arg camera_name)/camera_info" />
   <node name="$(anon record_cam)" pkg="rosbag" type="record" output="screen"
-    args="record -o $(find picam_ros)/bags/$(arg bagfile_name) $(arg camera_name)/image_raw $(arg camera_name)/camera_info -b 0"
+    args="record -o $(find picam_ros)/bags/$(arg bagfile_name) $(arg topics_to_collect) -b 0"
     if="$(eval arg('record_cam'))" />
 
 </launch>
