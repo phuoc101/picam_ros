@@ -2,7 +2,7 @@
 <launch>
   <arg name="image_topic" default="/picam360/image_raw" />
   <arg name="output_path" default="picam2"/>
-  <arg name="bagfile" default="picam2.bag" />
+  <arg name="bagfile" default="Hevolinna/picam2.bag" />
   <arg name="lower_thresh" default="150" />
   <arg name="higher_thresh" default="255" />
   <node name="$(anon image_cropper)" pkg="picam_ros" type="crop.py" output="screen" required="true" >

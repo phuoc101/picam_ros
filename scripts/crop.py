@@ -10,6 +10,10 @@ from cv_bridge import CvBridge
 
 
 class ImageCropper(object):
+    """
+    Image Cropper class: Automatically detects contour of fisheye circle and crop image wrt it
+    """
+
     def __init__(self):
         self.has_radius_and_center = False
         self.lower_thresh = rospy.get_param("~lower_thresh")
@@ -36,7 +40,10 @@ class ImageCropper(object):
         self.img_n = 0
         self.bridge = CvBridge()
 
-    def get_fisheye_offset(self, img_sample):
+    def get_fisheye_circle_info(self, img_sample):
+        """
+        Get fisheye circle radius and center
+        """
         gray = cv2.cvtColor(img_sample, cv2.COLOR_BGR2GRAY)
         _, mask = cv2.threshold(gray, self.lower_thresh,
                                 self.higher_thresh, cv2.CV_8UC1)
@@ -55,8 +62,11 @@ class ImageCropper(object):
         return center, radius
 
     def crop(self, img):
+        """
+        Crop image around the fisheye circle and save in predetermined img_path
+        """
         if not self.has_radius_and_center:
-            self.center, self.radius = self.get_fisheye_offset(
+            self.center, self.radius = self.get_fisheye_circle_info(
                 img_sample=img)
         img_cropped = img[self.center[1]-self.radius:self.center[1] +
                           self.radius, self.center[0]-self.radius:self.center[0]+self.radius]
@@ -65,14 +75,20 @@ class ImageCropper(object):
         cv2.imwrite(filepath, img_cropped)
         rospy.loginfo(f"Saved {filepath}")
         self.img_n += 1
-    
+
     def get_cropped_images(self):
+        """
+        Open bag file and crop images
+        """
         for topic, msg, t in self.bag.read_messages(self.image_topic):
             img_cv = self.bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
             self.crop(img_cv)
         self.bag.close()
 
     def get_video(self):
+        """
+        Convert frames collected to mp4 video
+        """
         video_name = rospy.get_param("video_name", default="output.mp4")
         os.system(
             f"ffmpeg -r 30 -i {self.img_path}/frame_%05d.png -y {os.path.join(self.video_path, video_name)}")
