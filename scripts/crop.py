@@ -20,13 +20,17 @@ class ImageCropper(object):
             rospack.get_path("picam_ros"),
             "data",
             rospy.get_param("~output_path"))
+        self.img_path = os.path.join(self.output_path, "frames")
+        self.video_path = os.path.join(self.output_path, "video")
         self.bagfile = os.path.join(
             rospack.get_path("picam_ros"),
             "bags",
             rospy.get_param("~bagfile"))
         self.bag = Bag(self.bagfile, 'r')
         self.img_count = self.bag.get_message_count(self.image_topic)
-        os.makedirs(self.output_path, exist_ok=True)
+        # os.makedirs(self.output_path, exist_ok=True)
+        os.makedirs(self.img_path, exist_ok=True)
+        os.makedirs(self.video_path, exist_ok=True)
 
         self.radius, self.center = None, None
         self.img_n = 0
@@ -57,7 +61,7 @@ class ImageCropper(object):
         img_cropped = img[self.center[1]-self.radius:self.center[1] +
                           self.radius, self.center[0]-self.radius:self.center[0]+self.radius]
         filename = f"frame_{self.img_n:05d}.png"
-        filepath = os.path.join(self.output_path, filename)
+        filepath = os.path.join(self.img_path, filename)
         cv2.imwrite(filepath, img_cropped)
         rospy.loginfo(f"Saved {filepath}")
         self.img_n += 1
@@ -70,11 +74,8 @@ class ImageCropper(object):
 
     def get_video(self):
         video_name = rospy.get_param("video_name", default="output.mp4")
-        video_dir = os.path.join(self.output_path, "video")
-        os.makedirs(video_dir, exist_ok=True)
-        video_path = os.path.join(video_dir, video_name)
         os.system(
-            f"ffmpeg -r 30 -i {self.output_path}/frame_%05d.png -y {video_path}")
+            f"ffmpeg -r 30 -i {self.img_path}/frame_%05d.png -y {os.path.join(self.video_path, video_name)}")
         # rospy.loginfo(f"Saved video {video_path}")
 
 
