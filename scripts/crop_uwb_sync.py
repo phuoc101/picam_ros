@@ -133,18 +133,19 @@ class ImageUwbSync(object):
             uwb_filename = f"frame_{self.img_n:05d}.txt"
             uwb_filepath = os.path.join(self.uwb_path, uwb_filename)
             anno = ['' for x in self.uwb_topics]
-            for i, topic in enumerate(self.uwb_topics):
-                for _, msg_pos, t_pos in self.bag.read_messages(topic, start_time=self.__t_prev[i]):
-                    if t_pos >= t_img:
-                        rospy.logdebug(f"Tag: {self.uwb_tags[i]} Closest Coord x: {msg_pos.pose.position.x} y: {msg_pos.pose.position.y}")
-                        anno[i] = f"{self.uwb_tags[i]} {msg_pos.pose.position.x} {msg_pos.pose.position.y}\n"
-                        self.__t_prev[i] = t_pos
-                        break
-            with open(uwb_filepath, 'w+') as f:
-                for txt in anno:
-                    f.write(txt)
-                rospy.logdebug(f"Written uwb labels {uwb_filepath}")
-                f.close()
+            if self.uwb_topics:
+                for i, topic in enumerate(self.uwb_topics):
+                    for _, msg_pos, t_pos in self.bag.read_messages(topic, start_time=self.__t_prev[i]):
+                        if t_pos >= t_img:
+                            rospy.logdebug(f"Tag: {self.uwb_tags[i]} Closest Coord x: {msg_pos.pose.position.x} y: {msg_pos.pose.position.y}")
+                            anno[i] = f"{self.uwb_tags[i]} {msg_pos.pose.position.x} {msg_pos.pose.position.y}\n"
+                            self.__t_prev[i] = t_pos
+                            break
+                with open(uwb_filepath, 'w+') as f:
+                    for txt in anno:
+                        f.write(txt)
+                    rospy.logdebug(f"Written uwb labels {uwb_filepath}")
+                    f.close()
 
             self.img_n += 1
         self.bag.close()
