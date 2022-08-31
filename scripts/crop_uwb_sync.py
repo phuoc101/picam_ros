@@ -50,7 +50,7 @@ class ImageUwbSync(object):
         self.uwb_topics = [tp for tp in self.bag_topics_list if 'tag' in tp]
         self.uwb_tags = [tp.split('/')[3] for tp in self.uwb_topics]
         self.__t_prev = [None for x in self.uwb_topics]
-        self.uwb_path = os.path.join(self.output_path, "uwb_labels")
+        self.uwb_path = os.path.join(self.output_path, "labels", "uwb_labels")
         os.makedirs(self.uwb_path, exist_ok=True)
 
         self.img_n = 0
