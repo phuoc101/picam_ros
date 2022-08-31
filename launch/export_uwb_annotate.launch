@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="image_topic" default="/picam360/image_raw" />
+  <arg name="output_path" default="Narnia_tiny"/>
+  <arg name="bagfile" default="Narnia/picam_test.bag" />
+  <arg name="yaml" default="default.yaml" />
+  <node name="$(anon image_cropper)" pkg="picam_ros" type="crop_uwb_sync.py" output="screen" required="true" >
+    <param name="image_topic" value="$(arg image_topic)" />
+    <param name="output_path" value="$(arg output_path)" />
+    <param name="bagfile" value="$(arg bagfile)" />
+    <param name="yaml" value="$(arg yaml)" />
+  </node>
+</launch>
