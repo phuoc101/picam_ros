@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="image_topic" default="/picam360/image_raw" />
+  <arg name="output_path" default="Tierankatu_nodrone"/>
+  <arg name="bagfile" default="Tierankatu/picam_test_2K_no_drone_2022-11-29-15-41-03.bag" />
+  <arg name="yaml" default="default.yaml"/>
+  <arg name="cam_pos_topic" default="/vrpn_client_node/pycam/pose" />
+  <arg name="tracked_topics" default="[/vrpn_client_node/cardboard/pose, /vrpn_client_node/greylid/pose, /vrpn_client_node/telloblack/pose]"/>
+            
+  <node name="$(anon image_cropper)" pkg="picam_ros" type="crop_optitrack_sync.py" output="screen" required="true" >
+    <param name="image_topic" value="$(arg image_topic)" />
+    <param name="output_path" value="$(arg output_path)" />
+    <param name="bagfile" value="$(arg bagfile)" />
+    <param name="yaml" value="$(arg yaml)" />
+    <rosparam param="tracked_topics" subst_value="True">$(arg tracked_topics)</rosparam> 
+    <param name="cam_pos_topic" value="$(arg cam_pos_topic)" />
+  </node>
+</launch>
