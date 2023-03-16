@@ -3,6 +3,8 @@ import os
 import os.path as osp
 import argparse
 from loguru import logger
+import numpy as np
+import pickle
 
 
 class BoxDistSyncer(object):
@@ -25,6 +27,9 @@ class BoxDistSyncer(object):
         logger.debug(f"Tracker Labels {len(self.tracker_labels)}")
 
     def sync(self):
+        data = dict()
+        data["X"] = []
+        data["y"] = []
         for box_file, tracker_file in zip(self.box_labels, self.tracker_labels):
             box_lines = []
             tracker_lines = dict()
@@ -44,14 +49,31 @@ class BoxDistSyncer(object):
                     frameid, track_id, class_id, x, y, w, h, _, _, _, _ = line
                     if track_id == self.pairs[topic]:
                         anno.append(
-                            "{},{},{},{},{},{},{}\n".format(
-                                track_id, class_id, x, y, w, h, tracker_lines[topic]
-                            )
+                            "{},{},{},{},{},{},{:.2f}\n".format(
+                                track_id,
+                                class_id,
+                                x,
+                                y,
+                                w,
+                                h,
+                                float(tracker_lines[topic]),)
                         )
-            with open(
-                osp.join(self.synced_labels, osp.basename(box_file)), "w"
-            ) as f:
+                        data["X"].append(
+                            [
+                                # float(class_id),
+                                float(x),
+                                float(y),
+                                float(w),
+                                float(h),
+                            ]
+                        )
+                        data["y"].append(float(tracker_lines[topic]))
+            with open(osp.join(self.synced_labels, osp.basename(box_file)), "w") as f:
                 f.writelines(anno)
+        data["X"] = np.asarray(data["X"])
+        data["y"] = np.asarray(data["y"])
+        with open(osp.join(self.synced_labels, "data.pkl"), "wb") as f:
+            pickle.dump(data, f)
 
 
 def main(opts):

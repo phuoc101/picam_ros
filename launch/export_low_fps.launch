@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="image_topic" default="/picam360/image_raw" />
+  <arg name="output_path" default="Tierankatu_nodrone"/>
+  <arg name="bagfile" default="Tierankatu/picam_test_2K_no_drone_2022-11-29-15-41-03.bag" />
+  <arg name="yaml" default="default.yaml"/>
+  <arg name="cnt_lim" default="15"/>
+            
+  <node name="$(anon image_cropper)" pkg="picam_ros" type="crop_low_fps.py" output="screen" required="true" >
+    <param name="image_topic" value="$(arg image_topic)" />
+    <param name="output_path" value="$(arg output_path)" />
+    <param name="bagfile" value="$(arg bagfile)" />
+    <param name="yaml" value="$(arg yaml)" />
+    <param name="cnt_lim" value="$(arg cnt_lim)" />
+  </node>
+</launch>
